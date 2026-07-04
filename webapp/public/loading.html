@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>AI 教练启动中...</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0f17;color:#edf4ff;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:24px}
+.spinner{width:44px;height:44px;border:3px solid rgba(98,245,200,.18);border-top-color:#62f5c8;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+h1{font-size:22px;font-weight:700;letter-spacing:-.02em}
+p{color:#8ea0b9;font-size:14px}
+small{color:#5a6e88;font-size:12px;margin-top:8px}
+</style></head><body>
+<div class="spinner"></div>
+<h1>AI 上岗实战总教练</h1>
+<p id="status">正在启动服务...</p>
+<small id="detail"></small>
+<script>
+const TARGET="http://localhost:3000";
+let tries=0, maxTries=40;
+
+function update(s,d){document.getElementById("status").textContent=s;document.getElementById("detail").textContent=d||""}
+
+function check(){
+  tries++;
+  fetch(TARGET,{mode:'no-cors'}).then(()=>{
+    update("服务已就绪，正在跳转...","");
+    setTimeout(()=>{window.location.href=TARGET},500);
+  }).catch(()=>{
+    if(tries<maxTries){
+      update("正在编译启动...","已等待 "+tries+" 秒");
+      setTimeout(check,1000);
+    }else{
+      update("启动超时","请检查终端窗口是否有报错，或手动打开 http://localhost:3000");
+    }
+  });
+}
+setTimeout(check,2000);
+</script>
+</body></html>

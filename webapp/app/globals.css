@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+html,
+body {
+  height: 100%;
+  background: #0a0e14;
+  color: #e7ecf3;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a3444 transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #2a3444;
+  border-radius: 999px;
+}
+
+.prose-coach {
+  line-height: 1.7;
+}
+.prose-coach p {
+  margin: 0.5em 0;
+}
+.prose-coach h1,
+.prose-coach h2,
+.prose-coach h3 {
+  font-weight: 700;
+  margin: 0.8em 0 0.35em;
+  color: #f2a341;
+}
+.prose-coach h1 {
+  font-size: 1.15rem;
+}
+.prose-coach h2 {
+  font-size: 1.05rem;
+}
+.prose-coach h3 {
+  font-size: 1rem;
+}
+.prose-coach ul,
+.prose-coach ol {
+  padding-left: 1.3em;
+  margin: 0.4em 0;
+}
+.prose-coach li {
+  margin: 0.2em 0;
+}
+.prose-coach code {
+  background: #141b26;
+  border: 1px solid #232c3a;
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85em;
+  color: #4fd1c5;
+}
+.prose-coach pre {
+  background: #0f141d;
+  border: 1px solid #232c3a;
+  border-radius: 8px;
+  padding: 0.8em 1em;
+  overflow-x: auto;
+}
+.prose-coach pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.prose-coach table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6em 0;
+  font-size: 0.9em;
+}
+.prose-coach th,
+.prose-coach td {
+  border: 1px solid #232c3a;
+  padding: 0.4em 0.6em;
+  text-align: left;
+}
+.prose-coach th {
+  background: #141b26;
+  color: #f2a341;
+}
+.prose-coach blockquote {
+  border-left: 3px solid #f2a341;
+  padding-left: 0.8em;
+  margin: 0.5em 0;
+  color: #8a94a6;
+}
+.prose-coach strong {
+  color: #fff;
+}
+.prose-coach a {
+  color: #4fd1c5;
+  text-decoration: underline;
+}

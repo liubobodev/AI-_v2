@@ -1,0 +1,300 @@
+{
+  "main": {
+    "id": "48ddafafb9bee388",
+    "type": "split",
+    "children": [
+      {
+        "id": "409fff9a4a2c988e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ec37b5b7d38e3e1d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "12_高阶知识讲解/08_发射关_高阶.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "08_发射关_高阶"
+            }
+          },
+          {
+            "id": "e5c2e96d8c8bb85b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "00_README_先打开我.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "00_README_先打开我"
+            }
+          },
+          {
+            "id": "4b862acde9dc2539",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "一键启动.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "一键启动"
+            }
+          },
+          {
+            "id": "b526780a2b10d558",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "00_README_先打开我.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "00_README_先打开我"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ca54b83c370a0f89",
+    "type": "split",
+    "children": [
+      {
+        "id": "e14fff57c8666b4f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6f1ef7c03786271e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "beb7132b09e10b38",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "4db3d7772bbf8fe7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 295.5
+  },
+  "right": {
+    "id": "83c7de2d5cd6d516",
+    "type": "split",
+    "children": [
+      {
+        "id": "e03e7e0da55c4cbc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b57083a9ef31ffc7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "00_README_先打开我.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "00_README_先打开我 的反向链接列表"
+            }
+          },
+          {
+            "id": "3ffd653a5d18a1d2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "00_README_先打开我.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "00_README_先打开我 的出链列表"
+            }
+          },
+          {
+            "id": "f850c31314a77100",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "d9e950d4b0145ce3",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "f01ec6997cefc8a2",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "00_README_先打开我.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "00_README_先打开我 的大纲"
+            }
+          },
+          {
+            "id": "0e5e5d9597884d2c",
+            "type": "leaf",
+            "state": {
+              "type": "footnotes",
+              "state": {
+                "file": "00_README_先打开我.md"
+              },
+              "icon": "lucide-file-signature",
+              "title": "脚注"
+            }
+          },
+          {
+            "id": "baf474b3cbe9f19f",
+            "type": "leaf",
+            "state": {
+              "type": "review-queue-list-view",
+              "state": {},
+              "icon": "lucide-ghost",
+              "title": "review-queue-list-view"
+            }
+          }
+        ],
+        "currentTab": 6
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "audio-recorder:开始/结束录音": false,
+      "zk-prefixer:创建时间戳笔记": false,
+      "markdown-importer:打开 Markdown 格式转换器": false,
+      "workspaces:管理工作区布局": false,
+      "publish:发布更改": false,
+      "obsidian-excalidraw-plugin:新建绘图文件": false,
+      "obsidian-spaced-repetition:复习卡片": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "b526780a2b10d558",
+  "lastOpenFiles": [
+    "一键启动.md",
+    "启动指南.md",
+    "🚀_一键启动.md",
+    "00_README_先打开我.md",
+    "12_高阶知识讲解/08_发射关_高阶.md",
+    "webapp/lib/formatCheck.ts",
+    "webapp/components/ModelSelector.tsx",
+    "webapp/lib/models.ts",
+    "webapp/components/OnboardingModal.tsx",
+    "webapp/tsconfig.tsbuildinfo",
+    "webapp/next-env.d.ts",
+    "webapp/package-lock.json",
+    "webapp/node_modules/tailwindcss/lib/postcss-plugins/nesting/plugin.js",
+    "webapp/node_modules/tailwindcss/lib/postcss-plugins/nesting/index.js",
+    "webapp/node_modules/tailwindcss/lib/postcss-plugins/nesting/README.md",
+    "webapp/node_modules/tailwindcss/lib/cli/init/index.js",
+    "webapp/node_modules/tailwindcss/lib/value-parser/README.md",
+    "webapp/node_modules/next/README.md",
+    "webapp/node_modules/next/license.md",
+    "webapp/node_modules/next/dist/compiled/@babel/runtime/README.md",
+    "webapp/node_modules/next/dist/compiled/regenerator-runtime/README.md",
+    "webapp/node_modules/next/dist/compiled/react-refresh/README.md",
+    "webapp/node_modules/next/dist/compiled/react-is/README.md",
+    "webapp/node_modules/micromark-extension-gfm/readme.md",
+    "webapp/node_modules/is-glob/README.md",
+    "webapp/node_modules/readdirp/README.md",
+    "webapp/node_modules/fill-range/README.md",
+    "webapp/node_modules/to-regex-range/README.md",
+    "webapp/node_modules/ms/readme.md",
+    "webapp/node_modules/is-alphanumerical/readme.md",
+    "webapp/node_modules/character-entities-legacy/readme.md",
+    "webapp/node_modules/is-alphabetical/readme.md",
+    "webapp/node_modules/character-reference-invalid/readme.md",
+    "webapp/node_modules/is-hexadecimal/readme.md",
+    "webapp/node_modules/is-decimal/readme.md",
+    "webapp/node_modules/escape-string-regexp/readme.md",
+    "未命名.canvas"
+  ]
+}
