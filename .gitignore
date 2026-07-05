@@ -21,3 +21,6 @@ Thumbs.db
 # 日志
 *.log
 /tmp/
+
+# 环境变量
+.env.local
