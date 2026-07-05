@@ -35,8 +35,10 @@ export async function POST(req: NextRequest) {
   if (!model) return jsonError(`未知的模型: ${providerId}/${modelId}`, 400);
 
   // ---- API Key ----
-  const envKey =
-    providerId === "deepseek" ? process.env.DEEPSEEK_API_KEY : process.env.LLM_API_KEY;
+  let envKey = "";
+  if (providerId === "deepseek") envKey = process.env.DEEPSEEK_API_KEY || "";
+  else if (providerId === "glm") envKey = process.env.GLM_API_KEY || "";
+  else envKey = process.env.LLM_API_KEY || "";
   const apiKey = (body.apiKey || envKey || "").trim();
   if (!apiKey || apiKey.length < 10) {
     return jsonError(

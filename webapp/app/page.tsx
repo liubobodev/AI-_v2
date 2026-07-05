@@ -20,8 +20,8 @@ const STORAGE_STUDENT_ID = "ai-coach-student-id";
 const STORAGE_USER = "ai-coach-login-user";
 const MAX_STORED_MESSAGES = 50;
 
-const DEFAULT_PROVIDER = "deepseek";
-const DEFAULT_MODEL = "deepseek-v4-flash";
+const DEFAULT_PROVIDER = "glm";
+const DEFAULT_MODEL = "glm-4.7-flash";
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -71,8 +71,8 @@ function LoginScreen({
 
   if (mode) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-base p-4">
-        <div className="w-full max-w-sm rounded-2xl border border-border/60 bg-panel p-6 shadow-2xl">
+      <div className="flex min-h-screen items-center justify-center bg-base p-3 md:p-4">
+        <div className="w-full max-w-sm rounded-2xl border border-border/60 bg-panel p-4 md:p-6 shadow-2xl">
           <button
             onClick={() => { setMode(""); setLoginError(""); }}
             className="mb-4 text-[13px] text-muted hover:text-text transition-colors"
@@ -122,8 +122,8 @@ function LoginScreen({
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-base p-4">
-      <div className="w-full max-w-md rounded-2xl border border-border/60 bg-panel p-6 shadow-2xl">
+    <div className="flex min-h-screen items-center justify-center bg-base p-3 md:p-4">
+      <div className="w-full max-w-md rounded-2xl border border-border/60 bg-panel p-4 md:p-6 shadow-2xl">
         <h1 className="text-[22px] font-bold text-white mb-1">
           AI 上岗实战<span className="text-accent">总教练</span>
         </h1>
@@ -254,6 +254,7 @@ export default function Page() {
   const [studentId, setStudentId] = useState("");
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [showGrowth, setShowGrowth] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [loginReady, setLoginReady] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -461,15 +462,20 @@ export default function Page() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-base">
-      <aside className="flex w-64 shrink-0 flex-col gap-4 border-r border-border/60 bg-panel/40 p-4 overflow-y-auto">
+      {/* 桌面端侧边栏 */}
+      <aside className={`${showMobileSidebar ? "fixed inset-y-0 left-0 z-50 w-72 shadow-2xl" : "hidden"} md:flex md:relative md:w-64 md:shrink-0 flex-col gap-4 border-r border-border/60 bg-panel/40 p-4 overflow-y-auto`}>
+        <div className="flex items-center justify-between md:hidden mb-3">
+          <span className="text-[13px] font-semibold text-muted">菜单</span>
+          <button onClick={() => setShowMobileSidebar(false)} className="text-[20px] text-muted hover:text-text transition-colors">&times;</button>
+        </div>
         <div>
           <div className="text-[15px] font-extrabold tracking-tight text-white">
             AI 上岗实战<span className="text-accent">总教练</span>
           </div>
-          <div className="mt-0.5 text-[11px] text-muted">应用开发与智能体工程实战训练营</div>
+          <div className="mt-0.5 text-[11px] text-muted hidden md:block">应用开发与智能体工程实战训练营</div>
           <div className="mt-1 flex items-center gap-1.5">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" />
-            <span className="text-[11px] text-muted">{identityLabel} · {user?.name}</span>
+            <span className="text-[11px] text-muted truncate">{identityLabel} · {user?.name}</span>
           </div>
         </div>
 
@@ -516,9 +522,18 @@ export default function Page() {
           </button>
         </div>
       </aside>
+      {/* end sidebar */}
 
-      <main className="flex min-w-0 flex-1 flex-col">
-        <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-6 py-6">
+<main className="flex min-w-0 flex-1 flex-col">
+        {/* 移动端顶部栏 */}
+        <div className="hamburger-btn flex items-center gap-2 border-b border-border/60 bg-panel/60 px-3 py-2.5 safe-bottom">
+          <button onClick={() => setShowMobileSidebar(true)} className="text-[20px] text-text hover:text-accent transition-colors">
+            ☰
+          </button>
+          <span className="text-[13px] font-semibold text-text truncate">AI 上岗实战总教练</span>
+          <span className="text-[11px] text-muted ml-auto">{identityLabel}</span>
+        </div>
+        <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-3 md:px-6 py-3 md:py-6">
           {messages.map((m) => (<ChatMessage key={m.id} message={m} />))}
           {sending && (
             <div className="flex justify-start">
@@ -530,12 +545,12 @@ export default function Page() {
         </div>
 
         {errorBanner && (
-          <div className="mx-6 mb-2 whitespace-pre-line rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-[13px] text-red-300">
+          <div className="mx-3 md:mx-6 mb-2 whitespace-pre-line rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-[13px] text-red-300">
             {errorBanner}
           </div>
         )}
 
-        <div className="border-t border-border/60 bg-panel/40 p-4">
+        <div className="border-t border-border/60 bg-panel/40 p-3 md:p-4 safe-bottom">
           <div className="flex items-end gap-2">
             <textarea value={input} onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input); } }}

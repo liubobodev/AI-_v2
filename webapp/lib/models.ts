@@ -40,6 +40,7 @@ export const PROVIDERS: ModelProvider[] = [
     name: "智谱 GLM",
     baseUrl: "https://open.bigmodel.cn/api/paas/v4/chat/completions",
     models: [
+      { id: "glm-4.7-flash", name: "GLM-4.7-Flash ★" },
       { id: "glm-4-flash", name: "GLM-4-Flash（免费）" },
       { id: "glm-4-plus", name: "GLM-4-Plus" },
       { id: "glm-4-air", name: "GLM-4-Air" },

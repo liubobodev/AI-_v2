@@ -104,3 +104,41 @@ body {
   color: #4fd1c5;
   text-decoration: underline;
 }
+
+/* ===== 移动端响应式 ===== */
+@media (max-width: 768px) {
+  .sidebar-desktop {
+    display: none !important;
+  }
+  .sidebar-mobile-overlay {
+    display: flex !important;
+  }
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .full-width-mobile {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar-mobile-overlay {
+    display: none !important;
+  }
+  .hamburger-btn {
+    display: none !important;
+  }
+}
+
+/* 移动端底部安全区 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* 输入框移动端不缩放 */
+input, textarea, select {
+  font-size: 16px !important;
+}
