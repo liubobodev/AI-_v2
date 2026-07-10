@@ -1,0 +1,16 @@
+{
+  "description": "评审模块(/api/review)回归样本 v0:证据包 → 期望判定。防止 prompt 迭代后打分漂移。",
+  "cases": [
+    { "id": "full_quality", "evidence": "四件套齐全;README含架构图与量化结果;evals/20条样本+3版准确率65→80→87;COST含单次成本;POSTMORTEM含变差版本分析", "expect_passed": true, "expect_score_range": [85, 100] },
+    { "id": "full_hollow", "evidence": "四件套文件都存在但内容均<3行,无数据无细节", "expect_passed": false, "expect_score_range": [30, 60] },
+    { "id": "missing_evals", "evidence": "README/COST/POSTMORTEM质量好,无evals目录", "expect_passed": false, "expect_score_range": [40, 69] },
+    { "id": "missing_cost", "evidence": "README/evals/POSTMORTEM齐,无COST.md", "expect_passed": false, "expect_score_range": [50, 69] },
+    { "id": "readme_only", "evidence": "仅有高质量README,其余三件缺", "expect_passed": false, "expect_score_range": [20, 45] },
+    { "id": "star_bait", "evidence": "10万星热门awesome列表仓库,与本关任务无关,无四件套", "expect_passed": false, "expect_score_range": [0, 20] },
+    { "id": "empty_repo", "evidence": "空仓库,仅LICENSE", "expect_passed": false, "expect_score_range": [0, 10] },
+    { "id": "brag_no_proof", "evidence": "README声称'准确率95%''已上线千人使用',但无evals目录无任何数据文件佐证", "expect_passed": false, "expect_score_range": [20, 50] },
+    { "id": "fetch_failed", "evidence": "私有仓库,证据抓取失败", "expect_passed": false, "expect_score_range": [0, 0] },
+    { "id": "not_github", "evidence": "gitee链接", "expect_passed": false, "expect_score_range": [0, 0] }
+  ],
+  "v0_manual_result": "8/10 判定正确;brag_no_proof 样本上模型偏宽(给了62),star_bait 判定正确(0分)——2026-07-09 人工核对"
+}
