@@ -88,6 +88,8 @@ export default function GateMap({
   }, [replayStep]);
 
   const totalDone = gateProgress.filter((g) => g.status === "completed").length;
+  // 全新学生(零通关、三门皆暗):在第 1 关给一个明确的"从这开始"引导,避免面对全灰地图不知所措
+  const isBrandNew = !replaying && totalDone === 0 && gateProgress.every((x) => doorsLit(x) === 0);
   const excellentCount = gateProgress.filter((g) => {
     const r = computeGateRating(g, interviewResults);
     return r.overall === 3;
@@ -195,6 +197,13 @@ export default function GateMap({
                 <RatingLamp r={rating.review} />
                 <RatingLamp r={rating.interview} />
               </div>
+
+              {/* 新生引导:第 1 关脉冲 CTA */}
+              {isBrandNew && n === 1 && (
+                <div className="animate-badge-pulse mt-3 flex items-center justify-center gap-1 rounded-lg border border-accent2/40 bg-accent2/10 px-2 py-1.5 text-[11.5px] font-semibold text-accent2">
+                  → 从这里开始你的第一关
+                </div>
+              )}
 
               {/* 当前关标记（未拿评级时才显示，避免和评级徽章打架） */}
               {active && rating.overall === 0 && (
