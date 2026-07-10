@@ -31,6 +31,8 @@ const STORAGE_MODEL = "ai-coach-model";
 const STORAGE_STUDENT_ID = "ai-coach-student-id";
 const STORAGE_USER = "ai-coach-login-user";
 const MAX_STORED_MESSAGES = 50;
+// 登录态保留一节课(8 小时):课中刷新/关标签页不必重登,次日自动过期回到干净登录页
+const LOGIN_TTL_MS = 8 * 60 * 60 * 1000;
 
 const DEFAULT_PROVIDER = "glm";
 // 默认用非思考型 glm-4-flash:实测 20s 内出完整回复;思考型 glm-4.7-flash 首字 60s+ 会让学生盯空白
@@ -543,10 +545,23 @@ export default function Page() {
   // ---- 初始化 ----
   useEffect(() => {
     if (initDoneRef.current) return;
+    // 恢复未过期的学生登录态(P2-4):课中刷新不再被踢回登录页。
+    // 教师走 /teacher,演示号每次重进以便完整回放,故此处只恢复真实学生。
     try {
-      window.localStorage.removeItem(STORAGE_USER);
-      window.localStorage.removeItem(STORAGE_STUDENT_ID);
-    } catch {}
+      const raw = window.localStorage.getItem(STORAGE_USER);
+      const savedId = window.localStorage.getItem(STORAGE_STUDENT_ID);
+      const parsed = raw ? (JSON.parse(raw) as LoginUser & { ts?: number }) : null;
+      const fresh = !!parsed && typeof parsed.ts === "number" && Date.now() - parsed.ts < LOGIN_TTL_MS;
+      if (fresh && parsed!.loggedIn && !parsed!.isDemo && parsed!.role !== "teacher" && (parsed!.userId || savedId)) {
+        setUser({ name: parsed!.name, role: parsed!.role, userId: parsed!.userId, loggedIn: true });
+        setStudentId(parsed!.userId || savedId || "");
+      } else {
+        window.localStorage.removeItem(STORAGE_USER);
+        window.localStorage.removeItem(STORAGE_STUDENT_ID);
+      }
+    } catch {
+      try { window.localStorage.removeItem(STORAGE_USER); window.localStorage.removeItem(STORAGE_STUDENT_ID); } catch {}
+    }
     setApiKey(loadStr(STORAGE_KEY, ""));
     setProviderId(loadStr(STORAGE_PROVIDER, DEFAULT_PROVIDER));
     setModelId(loadStr(STORAGE_MODEL, DEFAULT_MODEL));
@@ -807,7 +822,7 @@ export default function Page() {
   // ---- 登录处理 ----
   function handleLogin(userData: LoginUser) {
     try {
-      window.localStorage.setItem(STORAGE_USER, JSON.stringify(userData));
+      window.localStorage.setItem(STORAGE_USER, JSON.stringify({ ...userData, ts: Date.now() }));
       window.localStorage.setItem(STORAGE_STUDENT_ID, userData.userId);
     } catch (e) {
       console.warn("[login] storage write failed (may be private mode):", e);
