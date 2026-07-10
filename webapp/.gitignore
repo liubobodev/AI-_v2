@@ -2,3 +2,4 @@ node_modules
 .next
 .env*
 lib/knowledge-cache.ts
+.vercel

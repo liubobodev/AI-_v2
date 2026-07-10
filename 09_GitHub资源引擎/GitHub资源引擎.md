@@ -25,6 +25,7 @@
 | 可部署平台(国内) | langgenius/dify · infiniflow/ragflow · labring/FastGPT | 企业真实在用,面试常问 |
 | 多智能体 | FoundationAgents/MetaGPT · microsoft/autogen | 第 6 关参考架构 |
 | 求职 | 0voice/2026-Computer-Spring-Recruitment-Job-Compilation | 岗位+面经日更合集 |
+| 能力体系(新增) | SylphAI-Inc/LLM-engineer-handbook(4975★) · AgenticAiLabs/Ai-Engineering-Roadmap(849★) · tensorchord/Awesome-LLMOps(5870★) | 对照 `13_AI应用开发能力体系` 五层地图,查漏补缺用 |
 
 > 教师不用记这张表——教练智能体接了 gh 之后,说"给我本周雷达"即可。
 

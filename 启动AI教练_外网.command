@@ -1,67 +1,77 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR/webapp"
-
-lsof -ti:3000 | xargs kill -9 2>/dev/null
+export PATH="$HOME/.local/bin:$PATH"
 
 echo ""
 echo "========================================"
 echo "  AI 上岗实战总教练 · 外网模式"
+echo "  电脑/手机均可访问"
 echo "========================================"
 echo ""
 
+cd "/Users/mini_m4/Desktop/AI上岗实战训练营智能体_v2/webapp"
+
+# ---- 检查 ngrok ----
+NGROK=$(which ngrok 2>/dev/null || echo "$HOME/.local/bin/ngrok")
+if [ ! -x "$NGROK" ]; then
+  echo "正在安装 ngrok..."
+  curl -sL https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-darwin-arm64.zip -o /tmp/ngrok.zip
+  mkdir -p "$HOME/.local/bin"
+  unzip -o /tmp/ngrok.zip -d "$HOME/.local/bin/"
+  chmod +x "$HOME/.local/bin/ngrok"
+  NGROK="$HOME/.local/bin/ngrok"
+fi
+
+# ---- 依赖检查 ----
 if [ ! -d "node_modules" ]; then
-  echo "📦 首次运行，安装依赖中（约 2 分钟）..."
+  echo "安装依赖中..."
   npm install
-  echo ""
 fi
 
-if [ ! -d ".next" ] || [ ! -f ".next/BUILD_ID" ]; then
-  echo "🔨 首次运行，构建中..."
-  npm run build
-  echo ""
-fi
+# ---- 关闭旧进程 ----
+lsof -ti:3000 | xargs kill -9 2>/dev/null
+lsof -ti:4040 | xargs kill -9 2>/dev/null
 
-# 检查 ngrok
-if ! command -v ngrok &> /dev/null; then
-  echo "❌ 未安装 ngrok"
-  echo "   安装：brew install ngrok"
-  echo "   注册：https://ngrok.com → 获取 authtoken"
-  echo "   配置：ngrok config add-authtoken <你的token>"
-  echo ""
-  echo "💡 推荐：部署到 Vercel（免费永久外网），见 启动指南.md"
-  read -p "按回车退出..."
-  exit 1
-fi
+echo "启动本地服务..."
+npm run dev &
+DEV_PID=$!
+sleep 4
 
-# 启动生产服务器（背景）
-echo "🚀 启动本地服务器..."
-nohup npm run start -- -p 3000 > /tmp/ai-coach-server.log 2>&1 &
-SERVER_PID=$!
-
-sleep 2
-
-# 启动 ngrok
-echo "🌐 启动 ngrok 隧道..."
-ngrok http 3000 --log=stdout > /tmp/ngrok.log 2>&1 &
+echo ""
+echo "启动外网隧道..."
+"$NGROK" http 3000 --log=stdout &
 NGROK_PID=$!
 
-# 等 ngrok 获取公网地址
-sleep 4
-PUBLIC_URL=$(/usr/bin/curl -s http://127.0.0.1:4040/api/tunnels 2>/dev/null | /opt/homebrew/bin/python3 -c "import sys,json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])" 2>/dev/null)
+sleep 3
+PUBLIC_URL=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null | python3 -c "
+import sys,json
+try:
+  tunnels = json.load(sys.stdin).get('tunnels',[])
+  for t in tunnels:
+    if t.get('proto') == 'https':
+      print(t['public_url'])
+      break
+except: pass
+" 2>/dev/null)
 
 echo ""
 echo "========================================"
-echo "  🌐 公网地址（电脑/手机均可访问）："
-echo "  $PUBLIC_URL"
-echo ""
-echo "  教师面板：$PUBLIC_URL/teacher"
-echo "  管理后台：$PUBLIC_URL/admin"
+echo "  ✅ 服务已启动"
 echo "========================================"
 echo ""
-echo "按 Ctrl+C 停止所有服务"
+if [ -n "$PUBLIC_URL" ]; then
+  echo "  外网地址（电脑/手机均可打开）："
+  echo ""
+  echo "  👉 $PUBLIC_URL"
+  echo ""
+  open "$PUBLIC_URL"
+else
+  echo "  查看 ngrok 状态：http://localhost:4040"
+  echo "  （首次使用需配置 authtoken，见下方说明）"
+  open http://localhost:4040
+fi
 
-# 等待用户中断
-trap "kill $SERVER_PID $NGROK_PID 2>/dev/null; echo '已停止'; exit 0" INT
-while true; do sleep 1; done
+echo "  按 Ctrl+C 停止服务"
+echo "========================================"
+
+wait $DEV_PID $NGROK_PID 2>/dev/null

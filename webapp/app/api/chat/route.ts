@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
   // ---- 学生画像（动态注入）----
   let studentContext = "";
   if (body.studentId) {
-    recordSession(body.studentId);
-    studentContext = buildStudentContext(body.studentId);
+    await recordSession(body.studentId);
+    studentContext = await buildStudentContext(body.studentId);
   }
 
   // ---- 用户身份注入 ----
