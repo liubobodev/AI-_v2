@@ -1,15 +1,16 @@
 import { NextRequest } from "next/server";
-import { login, createUser, verifyAdmin } from "@/lib/userStore";
+import { ensureAdmin, login, createUser, verifyAdmin, isUsingDefaultAdminPassword, recordAdminLogin } from "@/lib/userStore";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   let body: { action?: string; name?: string; password?: string; role?: string; expectedRole?: string };
   try { body = await req.json(); } catch { return jsonError("非法 JSON", 400); }
+  await ensureAdmin();
 
   if (body.action === "login") {
     if (!body.name || !body.password) return jsonError("缺少用户名或密码", 400);
-    const user = login(body.name, body.password);
+    const user = await login(body.name, body.password);
     if (!user) return jsonError("用户名或密码错误", 401);
 
     // 角色校验：前端传入 expectedRole 时，必须匹配
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     if (!body.name || !body.password) return jsonError("缺少用户名或密码", 400);
     if (!body.role || !["teacher"].includes(body.role)) return jsonError("仅支持注册教师账号", 400);
     try {
-      const user = createUser(body.name, body.role as "teacher", body.password);
+      const user = await createUser(body.name, body.role as "teacher", body.password);
       const { passwordHash, ...safe } = user;
       return Response.json({ ok: true, user: safe });
     } catch (e: any) { return jsonError(e.message, 400); }
@@ -41,7 +42,14 @@ export async function POST(req: NextRequest) {
 
   if (body.action === "admin_login") {
     if (!body.password) return jsonError("缺少密码", 400);
-    if (verifyAdmin(body.password)) return Response.json({ ok: true, user: { userId: "admin", name: "admin", role: "admin" } });
+    if (verifyAdmin(body.password)) {
+      await recordAdminLogin(body.password);
+      return Response.json({
+        ok: true,
+        user: { userId: "admin", name: "admin", role: "admin" },
+        security: { usingDefaultAdminPassword: isUsingDefaultAdminPassword() },
+      });
+    }
     return jsonError("管理员密码错误", 401);
   }
 
