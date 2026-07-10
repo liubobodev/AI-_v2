@@ -1,44 +1,25 @@
 #!/bin/bash
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR/webapp"
-
-lsof -ti:3000 | xargs kill -9 2>/dev/null
-
+clear
 echo ""
-echo "========================================"
-echo "  AI 上岗实战总教练"
-echo "  正在启动（生产模式 · 稳定版）..."
-echo "========================================"
+echo "  ╔══════════════════════════════════════╗"
+echo "  ║   AI 上岗实战总教练                  ║"
+echo "  ╚══════════════════════════════════════╝"
 echo ""
 
+cd "/Users/mini_m4/Desktop/AI上岗实战训练营智能体_v2/webapp"
+
+# 清理旧进程
+kill $(lsof -ti:3000) 2>/dev/null
+
+# 依赖检查
 if [ ! -d "node_modules" ]; then
-  echo "📦 首次运行，安装依赖中（约 2 分钟）..."
+  echo "  安装依赖..."
   npm install
-  echo ""
 fi
 
-if [ ! -d ".next" ] || [ ! -f ".next/BUILD_ID" ]; then
-  echo "🔨 首次运行，构建中（约 1 分钟）..."
-  npm run build
-  echo ""
-fi
+# 先打开 loading 页（本地文件，一定打得开）
+open "file:///Users/mini_m4/Desktop/AI上岗实战训练营智能体_v2/webapp/public/loading.html"
 
-LOCAL_IP=$(ifconfig | grep "inet " | grep -v 127.0.0.1 | grep -v 198.18 | awk '{print $2}' | head -1)
-
-echo "🚀 启动生产服务器..."
-echo ""
-echo "  💻 本机访问:  http://localhost:3000"
-echo "  📱 手机访问:  http://${LOCAL_IP}:3000  (同一WiFi)"
-echo "  👩‍🏫 教师面板:  /teacher"
-echo "  ⚙️ 管理后台:  /admin"
-echo ""
-
-(sleep 2 && open http://localhost:3000) &
-
-while true; do
-  npm run start -- -p 3000
-  echo ""
-  echo "⚠️ 服务器意外退出，3秒后自动重启..."
-  sleep 3
-done
+# 启动服务（保持终端打开）
+echo "  启动服务中..."
+npm run dev
