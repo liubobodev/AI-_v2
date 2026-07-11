@@ -8,7 +8,7 @@ export type CoachScene =
   | "project_selection"
   | "teacher_planning";
 
-const GATES = [
+export const GATE_DEFINITIONS = [
   { gate: 1, name: "侦察关", topics: "AI 产品/JD 拆解、赛道与企业场景选题" },
   { gate: 2, name: "AI 编程协作关", topics: "规格驱动开发、AI 编程协作、代码与测试链路" },
   { gate: 3, name: "Prompt 资产关", topics: "Prompt 模板、结构化输出、版本管理与基础评测" },
@@ -51,7 +51,7 @@ export function buildCoachScopePrompt({
   scene?: CoachScene;
 }): string {
   const isTeacher = userRole === "teacher";
-  const currentGate = GATES.find((item) => item.gate === gate);
+  const currentGate = GATE_DEFINITIONS.find((item) => item.gate === gate);
   const activeScene = isTeacher ? "teacher_planning" : scene ?? detectCoachScene(messages);
   const person = userName || (isTeacher ? "一位教师" : "一位学生");
 
@@ -77,7 +77,7 @@ export function buildCoachScopePrompt({
 当前关卡未确定。不要默认获得全课程回答权限，也不要展开任一关的具体方案；先询问用户所在关卡，或请用户从界面进入对应关卡后再提问。`;
   }
 
-  const routing = GATES.map(
+  const routing = GATE_DEFINITIONS.map(
     (item) => `- 第 ${item.gate} 关 · ${item.name}：${item.topics}`
   ).join("\n");
 

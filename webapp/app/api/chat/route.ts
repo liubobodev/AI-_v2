@@ -3,6 +3,7 @@ import { getBaseSystemPrompt, getKnowledgeBaseText } from "@/lib/knowledgeBase";
 import { getProviderById, getModelById } from "@/lib/models";
 import { buildStudentContext, recordSession } from "@/lib/studentStore";
 import { buildCoachScopePrompt, type CoachScene } from "@/lib/chatScope";
+import { enforceCoachScope, staticChatStream } from "@/lib/scopeGuard";
 
 export const runtime = "nodejs";
 
@@ -28,6 +29,24 @@ export async function POST(req: NextRequest) {
 
   const { messages, gate } = body;
 
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return jsonError("消息为空", 400);
+  }
+
+  // ---- 服务端范围闸门：失败关闭，不把无关/跨关内容交给通用模型 ----
+  const scopeDecision = enforceCoachScope({
+    gate,
+    userRole: body.userRole === "teacher" ? "teacher" : "student",
+    messages,
+    scene: body.scene,
+  });
+  if (scopeDecision.action !== "allow") {
+    console.log(
+      `[chat-scope] action=${scopeDecision.action} reason=${scopeDecision.reason} gate=${gate ?? "missing"}`
+    );
+    return staticChatStream(scopeDecision.message);
+  }
+
   // ---- 解析模型 ----
   const providerId = body.providerId || "deepseek";
   const modelId = body.modelId || "deepseek-chat";
@@ -47,10 +66,6 @@ export async function POST(req: NextRequest) {
       "缺少有效的 API Key。请在 webapp/.env.local 中配置，或在界面「设置」里填入。",
       401
     );
-  }
-
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return jsonError("消息为空", 400);
   }
 
   // ---- 学生画像（动态注入）----

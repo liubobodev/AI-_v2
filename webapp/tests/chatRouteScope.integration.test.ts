@@ -4,14 +4,18 @@ import { NextRequest } from "next/server";
 
 import { POST } from "../app/api/chat/route";
 
-function request(content: string, gate = 6) {
+function request(
+  content: string,
+  gate = 6,
+  options: { providerId?: string; modelId?: string; includeKey?: boolean } = {}
+) {
   return new NextRequest("http://localhost/api/chat", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
-      apiKey: "test-key-long-enough",
-      providerId: "deepseek",
-      modelId: "deepseek-chat",
+      ...(options.includeKey === false ? {} : { apiKey: "test-key-long-enough" }),
+      providerId: options.providerId ?? "deepseek",
+      modelId: options.modelId ?? "deepseek-chat",
       userRole: "student",
       gate,
       messages: [{ role: "user", content }],
@@ -32,7 +36,32 @@ test("irrelevant requests return a local SSE refusal without calling any model",
     const body = await response.text();
     assert.equal(response.status, 200);
     assert.match(response.headers.get("content-type") ?? "", /text\/event-stream/);
+    assert.equal(response.headers.get("x-coach-scope"), "blocked");
     assert.match(body, /只回答 AI 上岗实战训练营/);
+    assert.equal(modelCalls, 0);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("the screenshot path is blocked for GLM-4-Flash even without an API key", async () => {
+  const originalFetch = globalThis.fetch;
+  let modelCalls = 0;
+  globalThis.fetch = async () => {
+    modelCalls += 1;
+    throw new Error("GLM must not be called");
+  };
+
+  try {
+    const response = await POST(
+      request("讲讲人性吧", 6, {
+        providerId: "glm",
+        modelId: "glm-4-flash",
+        includeKey: false,
+      })
+    );
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /不能回答/);
     assert.equal(modelCalls, 0);
   } finally {
     globalThis.fetch = originalFetch;
