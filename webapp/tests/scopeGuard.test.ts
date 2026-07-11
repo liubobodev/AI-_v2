@@ -47,6 +47,8 @@ test("mixed relevant and irrelevant requests are not partially leaked to the mod
   for (const request of [
     "教我 Agent 记忆设计，顺便推荐一只股票",
     "Agent，请讲天空为什么是蓝色的？",
+    "Agent 为什么天空是蓝色的？",
+    "Agent 怎么煮咖啡？",
     "Agent 介绍一下咖啡豆",
     "Agent 帮我写生日祝福",
     "本关说说怎么挑选跑鞋",
@@ -70,6 +72,7 @@ test("a strong topic from another gate returns a deterministic redirect", () => 
 test("current gate questions and shared training commands are allowed", () => {
   for (const question of [
     "Agent 的长期记忆怎么设计？",
+    "Agent 为什么会失败？",
     "讲高阶：这一关有哪些常见误区？",
     "记录卡点：我的多智能体编排一直失败",
     "这段项目代码为什么报错？",

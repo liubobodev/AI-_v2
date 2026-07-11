@@ -19,7 +19,7 @@ const GATE_PATTERNS: ReadonlyArray<{ gate: number; pattern: RegExp }> = [
   { gate: 3, pattern: /\bPrompt\b|提示词|结构化输出|JSON\s*Schema|模板版本|提示模板|few[ -]?shot|system\s*prompt/i },
   { gate: 4, pattern: /\bRAG\b|混合检索|向量检索|召回率?|embedding|切片|分块|重排|rerank|知识库问答|引用问答/i },
   { gate: 5, pattern: /\bMCP\b|Model\s*Context\s*Protocol|function\s*call|tool\s*call|工具调用|MCP\s*(server|client)|外部工具/i },
-  { gate: 6, pattern: /\bAgent\b|智能体|多\s*Agent|多智能体|multi[ -]?agent|长期记忆|短期记忆|任务规划|工具编排|orchestrator|worker|失败重试|降级路径|\bReAct\b|Plan[ -]?and[ -]?Execute|reflection/i },
+  { gate: 6, pattern: /\bAgent\b|智能体|多\s*Agent|多智能体|multi[ -]?agent|长期记忆|短期记忆|任务规划|工具编排|orchestrator|worker|失败重试|失败处理|重试机制|降级路径|护栏|\bReAct\b|Plan[ -]?and[ -]?Execute|reflection/i },
   { gate: 7, pattern: /\bEvals?\b|LLM\s*judge|评测集|自动化回归|回归脚本|红队报告|人工一致率|评测指标/i },
   { gate: 8, pattern: /简历句|作品集|项目包装|两分钟路演|2\s*分钟路演|模拟终面|终面|求职冲刺/i },
 ];
@@ -130,6 +130,20 @@ function hasKeywordPadding(content: string): boolean {
   return true;
 }
 
+function hasQuestionKeywordPadding(content: string): boolean {
+  const question = content.match(/为什么|怎么|如何|是什么/);
+  if (!question || question.index == null) return false;
+
+  const before = content.slice(0, question.index).trim();
+  const after = content.slice(question.index + question[0].length).trim().replace(/[？?。.]$/, "");
+  const beforeIsScope = gateTargets(before).length > 0 || SCOPE_SHARED_PATTERN.test(before);
+  const afterIsScope = gateTargets(after).length > 0 || SCOPE_SHARED_PATTERN.test(after) || CODE_PATTERN.test(after);
+  if (!beforeIsScope || afterIsScope || !after) return false;
+
+  // 仅放行明确承接前方技术主语的短问法；出现新的未知主语时失败关闭。
+  return !/^(?:会失败|会出错|需要什么|有什么用|工作|运行|设计|实现|优化|做|调用|协作|规划|执行|记忆|评测|检索|管理|写|部署|测试|报错|控制|构建|准备|处理|排查|解决|改进|提升|编写|配置|搭建|选择|判断|验证|衡量|调试|定位|复现|发布|上线|连接数据库|接入数据库)$/.test(after);
+}
+
 export function enforceCoachScope({
   gate,
   userRole,
@@ -176,6 +190,9 @@ export function enforceCoachScope({
   }
   if (hasTrainingContent && hasKeywordPadding(latest)) {
     return refusal(gate, true, "scope_keyword_padding");
+  }
+  if (hasTrainingContent && hasQuestionKeywordPadding(latest)) {
+    return refusal(gate, true, "scope_question_padding");
   }
 
   if (GREETING_PATTERN.test(latest)) {
