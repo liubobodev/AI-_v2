@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getBaseSystemPrompt, getKnowledgeBaseText } from "@/lib/knowledgeBase";
 import { getProviderById, getModelById } from "@/lib/models";
 import { buildStudentContext, recordSession } from "@/lib/studentStore";
+import { buildCoachScopePrompt, type CoachScene } from "@/lib/chatScope";
 
 export const runtime = "nodejs";
 
@@ -17,6 +18,7 @@ export async function POST(req: NextRequest) {
     studentId?: string;
     userRole?: string;
     userName?: string;
+    scene?: CoachScene;
   };
   try {
     body = await req.json();
@@ -61,23 +63,24 @@ export async function POST(req: NextRequest) {
   // ---- 用户身份注入 ----
   const userRole = body.userRole || "";
   const userName = body.userName || "";
-  let identityBlock = "";
-  if (userRole === "teacher") {
-    identityBlock = `\n## 当前对话对象\n你正在和 **${userName || "一位教师"}**（教师身份）对话。对方是训练营的教师，负责管理学生和课程。请以专业教练的口吻交流，可讨论教学策略、课程设计、学生辅导等话题。`;
-  } else if (userRole === "student") {
-    identityBlock = `\n## 当前对话对象\n你正在和 **${userName || "一位学生"}**（学生身份）对话。对方是训练营的学员，正在完成闯关任务。请以鼓励、引导为主，结合关卡内容给出具体可操作的训练建议。`;
-  } else if (studentContext) {
-    // 有学生画像但无明确角色（兼容旧数据），从画像中提取
-    identityBlock = `\n## 当前对话对象\n你正在和一位训练营学员对话。`;
-  }
+  const scopeBlock = buildCoachScopePrompt({
+    gate,
+    userRole: userRole || (studentContext ? "student" : ""),
+    userName,
+    messages,
+    scene: body.scene,
+  });
 
   // ---- 拼装 System Prompt ----
-  const knowledgeBase = getKnowledgeBaseText(
-    gate && gate >= 1 && gate <= 8 ? gate : undefined
-  );
+  const validGate = gate && gate >= 1 && gate <= 8 ? gate : undefined;
+  const knowledgeBase = userRole === "teacher"
+    ? getKnowledgeBaseText()
+    : validGate
+      ? getKnowledgeBaseText(validGate)
+      : "（当前关卡未确定，暂不注入跨关知识；确认关卡后再提供对应资料。）";
   const systemPrompt =
     getBaseSystemPrompt() +
-    identityBlock +
+    scopeBlock +
     "\n\n以下是你可以引用的训练营知识库（高阶知识讲解、任务卡、评测手册、企业场景等），回答时按需引用，不要整段照抄:\n" +
     knowledgeBase +
     studentContext;
